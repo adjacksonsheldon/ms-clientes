@@ -1,0 +1,1 @@
+org.springframework.cloud.bootstrap.BootstrapConfiguration=com.asps.clientes.infrastructure.config.AppConfiguration

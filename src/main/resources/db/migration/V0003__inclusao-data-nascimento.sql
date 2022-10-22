@@ -1,0 +1,1 @@
+ALTER TABLE public.cliente ADD data_nascimento date NOT NULL;

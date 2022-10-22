@@ -1,0 +1,1 @@
+ALTER TABLE public.cliente ADD CONSTRAINT cliente_un UNIQUE (cpf);
