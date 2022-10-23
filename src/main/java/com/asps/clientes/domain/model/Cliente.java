@@ -1,5 +1,6 @@
 package com.asps.clientes.domain.model;
 
+import com.asps.clientes.domain.group.Groups;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
@@ -11,6 +12,8 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.groups.ConvertGroup;
+import javax.validation.groups.Default;
 import java.time.LocalDate;
 
 @Getter
@@ -42,7 +45,6 @@ public class Cliente {
     @Embedded
     private Endereco endereco;
 
-
     @Getter
     @Setter
     @Embeddable
@@ -64,8 +66,11 @@ public class Cliente {
         @Column(name = "endereco_bairro")
         private String bairro;
 
-        @NotEmpty
-        @Column(name = "endereco_estado")
-        private String estado;
+        @Valid
+        @ConvertGroup(to = Groups.EstadoId.class)
+        @NotNull
+        @ManyToOne
+        @JoinColumn(name = "endereco_estado_id", nullable = false)
+        private Estado estado;
     }
 }

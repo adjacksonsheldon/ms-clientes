@@ -19,7 +19,7 @@ public class EmpresaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Empresa criar(@RequestBody @Validated(Groups.EmpresaCadastro.class) Empresa empresa){
+    public Empresa criar(@RequestBody @Validated(Groups.EmpresaDataCriacao.class) Empresa empresa){
         return cadastroEmpresaService.salvar(empresa);
     }
 
@@ -41,7 +41,7 @@ public class EmpresaController {
     }
 
     @GetMapping("/filtrar")
-    public Empresa consultarPorCnpj(@RequestParam(required = false, name = "cnpj") String cnpj, @RequestParam(required = false, name = "id") Long id){
+    public Empresa filtrar(@RequestParam(required = false, name = "cnpj") String cnpj, @RequestParam(required = false, name = "id") Long id){
         if(id != null){
             return cadastroEmpresaService.consultar(id);
         }

@@ -33,7 +33,7 @@ public class Empresa {
     @Column(nullable = false)
     private String cnpj;
 
-    @NotNull(groups = Groups.EmpresaCadastro.class)
+    @NotNull(groups = Groups.EmpresaDataCriacao.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dataCriacao;
 }

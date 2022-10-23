@@ -52,7 +52,7 @@ public class ClienteController {
     }
 
     @GetMapping("/filtrar")
-    public Cliente consultarPorCpf(@RequestParam(required = false, name = "cpf") String cpf, @RequestParam(required = false, name = "id") Long id){
+    public Cliente filtrar(@RequestParam(required = false, name = "cpf") String cpf, @RequestParam(required = false, name = "id") Long id){
         if(id != null){
             return cadastroClienteService.consultar(id);
         }
