@@ -125,20 +125,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-        ex.printStackTrace();
-
-        if(isNull(body)){
-            body = createProblemBuilder(status.getReasonPhrase(), null, status).build();
-        } else if (body instanceof String){
-            body = createProblemBuilder((String) body, null, status).build();
-        }
-
-        return super.handleExceptionInternal(ex, body, headers, status, request);
-    }
-
-    @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         final var fields = ex.getBindingResult().getFieldErrors().stream().map(fieldError ->
                 Problem.Field.builder()
@@ -153,6 +139,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final var problem = this.createProblemBuilder(title, detail, status).fields(fields).build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        if(isNull(body)){
+            body = createProblemBuilder(status.getReasonPhrase(), null, status).build();
+        } else if (body instanceof String){
+            body = createProblemBuilder((String) body, null, status).build();
+        }
+
+        return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     private Problem.ProblemBuilder createProblemBuilder(String title, String detail, HttpStatus status) {
