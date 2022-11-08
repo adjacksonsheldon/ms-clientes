@@ -1,6 +1,5 @@
 package com.asps.clientes.api.exception;
 
-import com.azure.core.annotation.Get;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,11 +14,11 @@ public class Problem {
     private String type;
     private String title;
     private String detail;
-    private List<Field> fields;
+    private List<ObjectProblem> objectProblems;
 
     @Getter
     @Builder
-    public static class Field {
+    public static class ObjectProblem {
         private String name;
         private String message;
     }

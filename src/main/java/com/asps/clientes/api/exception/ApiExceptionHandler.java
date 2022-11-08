@@ -6,12 +6,17 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,7 +32,10 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private final MessageSource messageSource;
 
     @ExceptionHandler(RegistroDuplicadoException.class)
     public ResponseEntity<?> handlerRegistroDuplicadoException(RegistroDuplicadoException e
@@ -126,23 +134,40 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        final var fields = ex.getBindingResult().getFieldErrors().stream().map(fieldError ->
-                Problem.Field.builder()
-                        .name(fieldError.getField())
-                        .message(fieldError.getDefaultMessage())
-                        .build())
+        final var fields = ex.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .map(fieldError -> getField(fieldError))
                 .collect(Collectors.toList());
 
         final var title = "Dados inválidos";
         final var detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
-        final var problem = this.createProblemBuilder(title, detail, status).fields(fields).build();
+        final var problem = this.createProblemBuilder(title, detail, status).objectProblems(fields).build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
+    private Problem.ObjectProblem getField(ObjectError objectError) {
+
+        var name = objectError.getObjectName();
+
+        if(objectError instanceof FieldError){
+            name = ((FieldError) objectError).getField();
+        }
+
+        final var message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+
+        return Problem.ObjectProblem.builder()
+                .name(name)
+                .message(message)
+                .build();
+    }
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        ex.printStackTrace();
 
         if(isNull(body)){
             body = createProblemBuilder(status.getReasonPhrase(), null, status).build();

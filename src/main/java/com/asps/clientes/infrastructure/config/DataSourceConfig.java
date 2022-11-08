@@ -24,7 +24,7 @@ public class DataSourceConfig {
     public DataSource transactionsBatchDataSource(){
         return DataSourceBuilder.create()
                 .url(dbProperties.getUrl())
-                .username(dbProperties.getUser())
+                .username(dbProperties.getUsername())
                 .password(dbProperties.getPassword())
                 .build();
     }

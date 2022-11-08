@@ -1,6 +1,7 @@
 package com.asps.clientes.domain.model;
 
 import com.asps.clientes.domain.group.Groups;
+import com.asps.clientes.domain.validator.MaiorIdade;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 import java.time.LocalDate;
 
 @Getter
@@ -36,6 +36,7 @@ public class Cliente {
     @Column(nullable = false)
     private String cpf;
 
+    @MaiorIdade
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;

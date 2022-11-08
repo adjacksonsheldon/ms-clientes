@@ -1,6 +1,7 @@
 package com.asps.clientes.domain.model;
 
 import com.asps.clientes.domain.group.Groups;
+import com.asps.clientes.domain.validator.ValidacaoNomeEmpresa;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+@ValidacaoNomeEmpresa(groups = Groups.EmpresaDataCriacao.class)
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -24,9 +26,11 @@ public class Empresa {
     @Id
     private Long id;
 
-    @NotNull
-    @Column(nullable = false)
-    private String nome;
+    @Column(name = "razao_social")
+    private String razaoSocial;
+
+    @Column(name = "nome_fantasia")
+    private String nomeFantasia;
 
     @NotNull
     @CNPJ
