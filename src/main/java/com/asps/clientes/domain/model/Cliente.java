@@ -1,16 +1,15 @@
 package com.asps.clientes.domain.model;
 
 import com.asps.clientes.domain.group.Groups;
-import com.asps.clientes.domain.validator.MaiorIdade;
+import com.asps.clientes.core.validator.MaiorIdade;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
@@ -23,9 +22,11 @@ import java.time.LocalDate;
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity(name = "clientes")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Cliente {
 
-    @JsonIgnore
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,10 +53,16 @@ public class Cliente {
     @Embedded
     private Endereco endereco;
 
-    @Getter
     @Setter
+    @Column(name = "usuario_cadastro_id")
+    private Long usuarioCadastroId;
+
+    @Getter
     @Embeddable
-    private static class Endereco {
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Endereco {
 
         @NotEmpty
         @Column(name = "endereco_cep")
@@ -73,6 +80,7 @@ public class Cliente {
         @Column(name = "endereco_bairro")
         private String bairro;
 
+        @Setter
         @Valid
         @ConvertGroup(to = Groups.EstadoId.class)
         @NotNull

@@ -1,12 +1,11 @@
 package com.asps.clientes.domain.service;
 
-import com.asps.clientes.domain.exception.RegistroDuplicadoException;
+import com.asps.clientes.core.security.UsuarioInfoHelper;
 import com.asps.clientes.domain.exception.RegistroNaoEncontradoException;
 import com.asps.clientes.domain.model.Cliente;
 import com.asps.clientes.domain.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +15,18 @@ import java.util.List;
 public class CadastroClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final CadastroEstadoService cadastroEstadoService;
+
+    private final UsuarioInfoHelper usuarioInfo;
 
     public Cliente salvar(Cliente cliente){
-        try {
-            return  clienteRepository.save(cliente);
-        }catch (DataIntegrityViolationException e) {
-            throw new RegistroDuplicadoException("Cliente cadastrado anteriormente.", e);
-        }
+
+        final var estado = cadastroEstadoService.consultar(cliente.getEndereco().getEstado().getId());
+
+        cliente.setUsuarioCadastroId(usuarioInfo.getUsuarioId());
+        cliente.getEndereco().setEstado(estado);
+
+        return clienteRepository.save(cliente);
     }
 
     public List<Cliente> consultarTodos(){

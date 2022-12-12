@@ -1,4 +1,4 @@
-package com.asps.clientes.domain.validator;
+package com.asps.clientes.core.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

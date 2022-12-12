@@ -1,4 +1,4 @@
-package com.asps.clientes.domain.validator;
+package com.asps.clientes.core.validator;
 
 import com.asps.clientes.domain.model.Empresa;
 

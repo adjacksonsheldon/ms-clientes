@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -61,6 +62,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ValidacaoException.class)
     public ResponseEntity<?> handlerValidacaoException(ValidacaoException e,WebRequest webRequest) {
         return handlerBindingResult(e, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest, e.getBindingResult());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handlerValidacaoException(ConstraintViolationException e,WebRequest webRequest) {
+        Throwable rootCause = ExceptionUtils.getRootCause(e);
+
+        final var title = "Erro ao persistir dados.";
+
+        final var problem = this.createProblemBuilder(title, rootCause.getMessage(), HttpStatus.CONFLICT).build();
+        return handleExceptionInternal(e, problem, new HttpHeaders(), HttpStatus.CONFLICT, webRequest);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.asps.clientes.domain.model;
 
 import com.asps.clientes.domain.group.Groups;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,6 +10,9 @@ import javax.validation.constraints.NotNull;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity(name = "estados")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Estado {
 
     @NotNull(groups = Groups.EstadoId.class)

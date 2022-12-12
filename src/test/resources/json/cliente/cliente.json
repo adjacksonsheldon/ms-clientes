@@ -1,0 +1,14 @@
+{
+    "nome": "Jose Alberto"
+    ,"dataNascimento":"22/03/1984"
+    ,"cpf": "97700523029"
+    ,"endereco":{
+          "cep": "5458879",
+          "logradouro": "Rua XYZ ",
+          "numero": "1403",
+          "bairro": "Bairro Exemplar",
+          "estado": {
+            "id":1
+      }
+    }
+}

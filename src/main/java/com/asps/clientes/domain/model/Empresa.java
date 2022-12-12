@@ -1,9 +1,8 @@
 package com.asps.clientes.domain.model;
 
+import com.asps.clientes.core.validator.ValidacaoNomeEmpresa;
 import com.asps.clientes.domain.group.Groups;
-import com.asps.clientes.domain.validator.ValidacaoNomeEmpresa;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +19,6 @@ import java.time.LocalDate;
 @Entity(name = "empresas")
 public class Empresa {
 
-    @JsonIgnore
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
