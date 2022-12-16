@@ -16,7 +16,7 @@ import java.security.interfaces.RSAPublicKey;
 @RequiredArgsConstructor
 @Configuration
 @Getter
-public class CryptographyClientConfig {
+public class JwtDecoderConfig {
 
     private final ClientSecretCredential credentials;
     private final KeyVaultProperties keyVaultProperties;
