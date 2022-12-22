@@ -1,6 +1,7 @@
 package com.asps.clientes.api.controller;
 
 import com.asps.clientes.api.helper.MapToObjectHelper;
+import com.asps.clientes.core.security.CheckSecurity;
 import com.asps.clientes.domain.model.Cliente;
 import com.asps.clientes.domain.service.CadastroClienteService;
 import lombok.RequiredArgsConstructor;
@@ -21,18 +22,21 @@ public class ClienteController {
     private final CadastroClienteService cadastroClienteService;
     private final MapToObjectHelper<Cliente> mapToObjectHelper;
 
+    @CheckSecurity.PodeAlterar
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cliente criar(@RequestBody @Valid Cliente cliente){
         return cadastroClienteService.salvar(cliente);
     }
 
+    @CheckSecurity.PodeAlterar
     @PutMapping("/{cpf}")
     @ResponseStatus(HttpStatus.OK)
     public Cliente atualizar(@RequestBody Cliente cliente,@PathVariable String cpf){
         return cadastroClienteService.atualizar(cliente, cpf);
     }
 
+    @CheckSecurity.PodeAlterar
     @PatchMapping("/{cpf}")
     @ResponseStatus(HttpStatus.OK)
     public Cliente atualizar(@RequestBody Map<String, Object> mapCliente, @PathVariable String cpf, HttpServletRequest request) throws MethodArgumentNotValidException {
@@ -45,11 +49,13 @@ public class ClienteController {
     }
     
     @GetMapping
+    @CheckSecurity.IsAuthenticated
     public List<Cliente> consultarTodos(){
         return cadastroClienteService.consultarTodos();
     }
 
     @GetMapping("/filtrar")
+    @CheckSecurity.IsAuthenticated
     public Cliente filtrar(@RequestParam(required = false, name = "cpf") String cpf, @RequestParam(required = false, name = "id") Long id){
         if(id != null){
             return cadastroClienteService.consultar(id);
@@ -58,6 +64,7 @@ public class ClienteController {
         return cadastroClienteService.consultar(cpf);
     }
 
+    @CheckSecurity.PodeAlterar
     @DeleteMapping("/{cpf}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable String cpf){

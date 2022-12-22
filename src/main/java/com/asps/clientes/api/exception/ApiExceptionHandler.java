@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -27,6 +28,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,13 +76,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, problem, new HttpHeaders(), HttpStatus.CONFLICT, webRequest);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handlerAccessDeniedException(AccessDeniedException e, WebRequest webRequest) {
+        final var title = e.getMessage();
+        final var detail = "Você não possui permissão para realizar essa operação.";
+
+        final var problem = this.createProblemBuilder(title, e.getMessage(), HttpStatus.CONFLICT).build();
+        return handleExceptionInternal(e, problem, new HttpHeaders(), HttpStatus.CONFLICT, webRequest);
+    }
+
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         Throwable rootCause = ExceptionUtils.getRootCause(ex);
 
         final var title = "Mensagem inválida.";
-        String detail = "O corpo da requisição está inválido. Verifique erro de síntaxe.";
+        var detail = "O corpo da requisição está inválido. Verifique erro de síntaxe.";
         if (rootCause instanceof InvalidFormatException) {
             detail = detailFromInvalidFormatException((InvalidFormatException) rootCause);
         } else if (rootCause instanceof PropertyBindingException) {
