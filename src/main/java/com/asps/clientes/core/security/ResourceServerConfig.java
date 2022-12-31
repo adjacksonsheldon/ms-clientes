@@ -4,15 +4,14 @@ import com.asps.clientes.core.config.AppConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -40,13 +39,18 @@ public class ResourceServerConfig {
         final var jwtAuthenticationConverter = new JwtAuthenticationConverter();
 
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
+
+            final var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+            final var grantAuthorities = jwtGrantedAuthoritiesConverter.convert(jwt);
+
             final var authorities = jwt.getClaimAsStringList("authorities");
             if(nonNull(authorities)){
-                return authorities.stream()
+                grantAuthorities.addAll(authorities.stream()
                         .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()));
             }
-            return List.of();
+
+            return grantAuthorities;
         });
 
         return jwtAuthenticationConverter;

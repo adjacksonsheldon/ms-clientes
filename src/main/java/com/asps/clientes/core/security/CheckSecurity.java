@@ -9,15 +9,15 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public @interface CheckSecurity {
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority(cliente_reader) and hasAuthority(SCOPE_READ)")
     @Retention(RUNTIME)
     @Target(METHOD)
     @interface IsAuthenticated {
     }
 
-    @PreAuthorize("hasAuthority(write)")
+    @PreAuthorize("hasAuthority(cliente_writer) and hasAuthority(SCOPE_WRITE)")
     @Retention(RUNTIME)
     @Target(METHOD)
-    @interface PodeAlterar {
+    @interface PodeAlterarCliente {
     }
 }

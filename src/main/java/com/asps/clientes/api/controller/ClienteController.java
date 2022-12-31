@@ -22,21 +22,21 @@ public class ClienteController {
     private final CadastroClienteService cadastroClienteService;
     private final MapToObjectHelper<Cliente> mapToObjectHelper;
 
-    @CheckSecurity.PodeAlterar
+    @CheckSecurity.PodeAlterarCliente
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cliente criar(@RequestBody @Valid Cliente cliente){
         return cadastroClienteService.salvar(cliente);
     }
 
-    @CheckSecurity.PodeAlterar
+    @CheckSecurity.PodeAlterarCliente
     @PutMapping("/{cpf}")
     @ResponseStatus(HttpStatus.OK)
     public Cliente atualizar(@RequestBody Cliente cliente,@PathVariable String cpf){
         return cadastroClienteService.atualizar(cliente, cpf);
     }
 
-    @CheckSecurity.PodeAlterar
+    @CheckSecurity.PodeAlterarCliente
     @PatchMapping("/{cpf}")
     @ResponseStatus(HttpStatus.OK)
     public Cliente atualizar(@RequestBody Map<String, Object> mapCliente, @PathVariable String cpf, HttpServletRequest request) throws MethodArgumentNotValidException {
@@ -64,7 +64,7 @@ public class ClienteController {
         return cadastroClienteService.consultar(cpf);
     }
 
-    @CheckSecurity.PodeAlterar
+    @CheckSecurity.PodeAlterarCliente
     @DeleteMapping("/{cpf}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable String cpf){
